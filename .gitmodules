@@ -1,0 +1,9 @@
+[submodule "thirdparty/cpp-httplib"]
+	path = thirdparty/cpp-httplib
+	url = git@github.com:yhirose/cpp-httplib.git
+[submodule "thirdparty/fmt"]
+	path = thirdparty/fmt
+	url = git@github.com:fmtlib/fmt.git
+[submodule "thirdparty/hoedown"]
+	path = thirdparty/hoedown
+	url = git@github.com:hoedown/hoedown.git

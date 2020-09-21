@@ -1,0 +1,41 @@
+{
+	"folders":
+	[
+		{
+			"path": ".",
+		}
+	],
+	"settings": {
+		"ecc_common_flags" : [
+			"-std=c++17",
+			"-I/usr/include",
+			"-I$project_base_path/src",
+			// this is needed to include the correct headers for clang
+			"-I/usr/lib/clang/$clang_version/include",
+			// "-I/usr/lib/llvm-8/include/c++/v1",
+			// "-I/usr/include/c++/9",
+			"-I./include",
+			"-I./thirdparty/cpp-httplib",
+			"-I./thirdparty/fmt/include",
+			"-I./thirdparty/hoedown/src",
+			"-I./thirdparty/hoedown/bin",
+		],
+		"ecc_lang_flags": {
+			"C": ["-std=c17"],
+			"CPP": ["-std=c++17"],
+		},
+	},
+	"build_systems": 
+	[
+		{
+			"name": "make rebuild",
+			"shell_cmd": "make clean && make",
+			"working_dir": "$project_path",
+		},
+		{
+			"name": "make install",
+			"shell_cmd": "make install",
+			"working_dir": "$project_path",
+		}
+	]
+}
