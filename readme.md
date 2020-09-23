@@ -15,16 +15,17 @@ make
 ```
 - psst: build config is not so windows friendly but you can work your way through using mingw + gcc/clang
 
-#### usage
+#### how to use ?
 - run plebspot
 - place markdown files in `pages` and `posts` directories
 
 #### roadmap
 - [ ] use config file for icon, title, port, etc
-- [ ] code blocks syntax highlighting (impl options: enscript, gnu src-highlitem, highlightjs)
+- [ ] code blocks syntax highlighting (implementation options: enscript, gnu src-highlitem, highlightjs)
 - [ ] optional custom post/page title instead of filename
 - [ ] basic html templates
 - [ ] post categories
 - [ ] pages hierarchy
+- [ ] compressed html cache
 - [ ] rss feeds
 - [ ] comments

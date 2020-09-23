@@ -71,7 +71,6 @@ string render_md_file(const path& p){
 	void (*renderer_free)(hoedown_renderer *) = NULL;
 	hoedown_document *document;
 
-	// const char* argv[3] = {"","",""};
 	/* Parse options */
 	data.basename = NULL;
 	data.done = 0;
@@ -150,11 +149,26 @@ string get_posts_list(){
 	ss << "<h4>posts</h4><ul>";
 	for(auto& p: filesystem::directory_iterator(POSTS_DIR)){
 		if(!p.is_directory()){
-	    	ss <<  fmt::format("<li><a href='/posts/{0}'>{0}</a></li>", p.path().filename().string());
+			ss <<  fmt::format("<li><a href='/posts/{0}'>{0}</a></li>", p.path().filename().string());
 		}
 	}
 	ss << "</ul>" << endl;
 	return ss.str();
+}
+
+std::string get_file_contents(const char *filename)
+{
+	std::ifstream in(filename, std::ios::in | std::ios::binary);
+	if(in){
+		std::string contents;
+		in.seekg(0, std::ios::end);
+		contents.resize(in.tellg());
+		in.seekg(0, std::ios::beg);
+		in.read(&contents[0], contents.size());
+		in.close();
+		return(contents);
+	}
+	throw(errno);
 }
 
 int main(void)
@@ -167,12 +181,12 @@ int main(void)
 		res.set_content(get_pages_list() + get_posts_list(), "text/html");
 	});
 
-	svr.Get(R"(/pages/(.+))", [&](const Request& req, Response& res) {
+	svr.Get(R"(/pages/([a-zA-Z0-9_\-\.]+))", [&](const Request& req, Response& res) {
 		auto pagePath = req.matches[1];
 		res.set_content(render_md_file(string("./pages/") + pagePath.str()), "text/html");
 	});
 
-	svr.Get(R"(/posts/(.+))", [&](const Request& req, Response& res) {
+	svr.Get(R"(/posts/([a-zA-Z0-9_\-\.]+))", [&](const Request& req, Response& res) {
 		auto postPath = req.matches[1];
 		res.set_content(render_md_file(string("./posts/") + postPath.str()), "text/html");
 	});
@@ -181,6 +195,28 @@ int main(void)
 		svr.stop();
 	});
 
-	svr.listen("localhost", 1234);
-}
+	svr.Get("/favicon.ico", [&](const Request& req, Response& res) {
+		if(filesystem::exists("./favicon.ico")){
+			res.set_content(get_file_contents("./favicon.ico"), "image/webp");
+			return res.status = 200;
+		} else {
+			return res.status = 404;
+		}
+	});
 
+	svr.Get(R"(/static/([a-zA-Z0-9_\-\.]+))", [&](const Request& req, Response& res) {
+		string target_path = string("./static/") + req.matches[1].str();
+		fmt::print("requesting static uri {}\n", target_path);
+		if(filesystem::exists(target_path)){
+			res.set_content(get_file_contents(target_path.c_str()), "");
+			return res.status = 200;
+		} else {
+			return res.status = 404;
+		}
+	});
+
+	const char* ip = "0.0.0.0";
+	uint port = 1993;
+	fmt::print("starting to listen on {}:{}\n", ip, port);
+	svr.listen(ip, port);
+}

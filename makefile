@@ -89,7 +89,10 @@ depend:
 	$(MAKE) -C ./thirdparty/hoedown 
 #for color in $(DEP_PROJ_DIRS); do \
 #	$(MAKE) -C $(color) \
-#done;  
+#done; 
+
+install: all
+	cp $(BIN_DIR)/$(EXEC_FILE) ${HOME}/.local/bin/
 
 $(LIB_DIR)/$(A_FILE): $(OBJ_FILES)
 	@mkdir -p $(@D)
